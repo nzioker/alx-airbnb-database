@@ -1,3 +1,36 @@
+# SQL Subqueries: Correlated vs Non-Correlated
+
+This document demonstrates the implementation and differences between correlated and non-correlated subqueries in SQL, specifically applied to the Airbnb database schema.
+
+## 📊 Subquery Types Explained
+
+### Non-Correlated Subqueries
+- **Execution**: Runs independently first, then passes result to main query
+- **Dependency**: No reference to outer query columns
+- **Performance**: Generally faster, executes once
+- **Use Case**: When you need to filter based on a pre-calculated set of values
+
+### Correlated Subqueries
+- **Execution**: Runs once for each row in the main query
+- **Dependency**: References columns from the outer query
+- **Performance**: Can be slower for large datasets
+- **Use Case**: When the subquery condition depends on each individual row
+
+## 🔍 Key Queries
+
+### 1. Non-Correlated Subquery: High-Rated Properties
+Finds properties with average ratings greater than 4.0 using an independent subquery.
+
+```sql
+SELECT p.property_id, p.title, p.city
+FROM properties p
+WHERE p.property_id IN (
+    SELECT r.property_id
+    FROM reviews r
+    GROUP BY r.property_id
+    HAVING AVG(r.rating) > 4.0
+);
+
 ## 🗄️ Database Schema
 The analysis is based on an Airbnb clone database with the following key tables:
 - `users` - User information (hosts and guests)
